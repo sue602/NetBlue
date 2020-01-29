@@ -11,8 +11,7 @@
 #include "Poco/Runnable.h"
 using Poco::Runnable;
 
-#include "GS_ServiceModule.h"
-using namespace GS;
+#include "ServiceInterface.h"
 
 class CmdHandler : public Runnable {
 public:

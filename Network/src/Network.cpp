@@ -8,10 +8,12 @@
 #include <stdio.h>
 using namespace std;
 
+#include "Poco/Thread.h"
 #include "Poco/SharedLibrary.h"
 #include "Poco/Net/TCPServer.h"
 #include "Poco/Net/ServerSocket.h"
 #include "Poco/Net/TCPServerParams.h"
+using Poco::Thread;
 using Poco::SharedLibrary;
 using Poco::Net::TCPServer;
 using Poco::Net::ServerSocket;
@@ -20,19 +22,22 @@ using Poco::Net::TCPServerConnectionFactory;
 using Poco::Net::TCPServerConnectionFactoryImpl;
 
 #include "Network.h"
+#include "ModuleHandler.h"
 #include "ServerRejectFilter.h"
 #include "ServerConnection.h"
 
 
 Network::Network():
-		tcpsrv(0)
+		_tcpsrv(0),
+		_modHandler(0),
+		_module(0)
 {
 
 }
 
 Network::~Network()
 {
-	delete tcpsrv;
+	delete _tcpsrv;
 }
 
 void
@@ -94,15 +99,17 @@ Network::LoadModule()
 	path.append(SharedLibrary::suffix()); // adds ".dll" or ".so"
 	SharedLibrary library(path); // will also load the library
 	MODULE_ENTRY_FUNC func = (MODULE_ENTRY_FUNC)(library.getSymbol(MODULE_ENTRY_FUNC_NAME));
-	IServiceModule * module=0;
 	if(func)
 	{
-		module=func();
-		if(module)
+		_module=func();
+		if(_module)
 		{
-			module->Init(this);
+			_module->Init(this);
 		}
 	}
+	//启动模块处理线程
+	_modHandler = new ModuleHandler;
+	_modThread.start(*_modHandler);//启动线程
 }
 
 void
@@ -112,20 +119,25 @@ Network::InitServer(){
 	pParams->setMaxThreads(2);
 	pParams->setMaxQueued(2);
 	pParams->setThreadIdleTime(64);
-	tcpsrv = new TCPServer(new TCPServerConnectionFactoryImpl<ServerConnection>(), svs, pParams);
-	tcpsrv->setConnectionFilter(new ServerRejectFilter);
+	_tcpsrv = new TCPServer(new TCPServerConnectionFactoryImpl<ServerConnection>(), svs, pParams);
+	_tcpsrv->setConnectionFilter(new ServerRejectFilter);
 }
 
 /* 启动服务器
  * */
 void
 Network::StartServer(){
-	tcpsrv->start();
+	_tcpsrv->start();
 }
 
 /* 停止服务器
  * */
 void
 Network::StopServer(){
-	tcpsrv->stop();
+	//等待网络线程结束
+	_tcpsrv->stop();
+	//停止模块处理线程
+	_modHandler->Stop();
+	//等待模块处理线程结束
+	_modThread.join();
 }

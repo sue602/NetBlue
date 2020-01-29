@@ -8,9 +8,8 @@
 #ifndef GATELOGIC_H_
 #define GATELOGIC_H_
 
-#include "GS_Std.h"
-#include "GS_ServiceModule.h"
-using namespace GS;
+#include "ServiceInterface.h"
+#include "Poco/Foundation.h"
 
 class GateLogic : public IServiceModule
 {

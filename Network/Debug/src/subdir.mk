@@ -4,16 +4,19 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/ModuleHandler.cpp \
 ../src/Network.cpp \
 ../src/ServerConnection.cpp \
 ../src/ServerRejectFilter.cpp 
 
 OBJS += \
+./src/ModuleHandler.o \
 ./src/Network.o \
 ./src/ServerConnection.o \
 ./src/ServerRejectFilter.o 
 
 CPP_DEPS += \
+./src/ModuleHandler.d \
 ./src/Network.d \
 ./src/ServerConnection.d \
 ./src/ServerRejectFilter.d 

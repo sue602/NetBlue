@@ -8,6 +8,7 @@
 
 
 //Poco INCLUDEs
+#include "ServiceInterface.h"
 #include "Poco/Manifest.h"
 #include "Poco/ClassLoader.h"
 #include "Poco/ClassLibrary.h"
@@ -16,8 +17,6 @@
 #include "Poco/Message.h"
 
 //GS INCLUDEs
-#include "GS_ServiceModule.h"
-using namespace GS;
 using Poco::Thread;
 using Poco::Logger;
 using Poco::Message;
