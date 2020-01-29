@@ -21,6 +21,8 @@ namespace GS
 	public:
 		//初始化
 		virtual void Init()=0;
+		//释放资源
+		virtual void Uninit()=0;
 		//向底层发送消息
 		virtual void SendResponseMessage(const char * msg, unsigned int sz)=0;
 		//向服务器发请求消息

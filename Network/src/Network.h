@@ -8,6 +8,7 @@
 #ifndef SRC_NETWORK_H_
 #define SRC_NETWORK_H_
 
+#include <memory>
 #include <iostream>
 using namespace std;
 
@@ -27,12 +28,17 @@ namespace GS
 	{
 	public:
 		Network();
-		~Network();
+		virtual ~Network();
 	public:
 		void LoadModule();
+		void InitServer();
+		void StartServer();
+		void StopServer();
 	public:
 		//初始化
 		virtual void Init();
+		//释放资源
+		virtual void Uninit();
 		//向底层发送消息
 		virtual void SendResponseMessage(const char * msg, unsigned int sz);
 		//向服务器发请求消息
@@ -45,7 +51,8 @@ namespace GS
 		virtual void DisconnectClient(unsigned int aHandle);
 		//获取服务器KEY
 		virtual long ServerKey();
-
+	protected:
+		TCPServer* tcpsrv;
 	public:
 		friend class CSingleton<Network>;
 	};

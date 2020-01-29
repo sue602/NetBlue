@@ -9,25 +9,44 @@
 using namespace std;
 
 #include "Poco/SharedLibrary.h"
+#include "Poco/Net/TCPServer.h"
+#include "Poco/Net/ServerSocket.h"
+#include "Poco/Net/TCPServerParams.h"
 using Poco::SharedLibrary;
+using Poco::Net::TCPServer;
+using Poco::Net::ServerSocket;
+using Poco::Net::TCPServerParams;
+using Poco::Net::TCPServerConnectionFactory;
+using Poco::Net::TCPServerConnectionFactoryImpl;
 
 #include "Network.h"
+#include "ServerRejectFilter.h"
+#include "ServerConnection.h"
 
 
-Network::Network()
+Network::Network():
+		tcpsrv(0)
 {
 
 }
 
 Network::~Network()
 {
-
+	delete tcpsrv;
 }
 
 void
 Network::Init()
 {
 	LoadModule();
+	InitServer();
+	StartServer();
+}
+
+void
+Network::Uninit()
+{
+	StopServer();
 }
 
 void
@@ -85,4 +104,29 @@ Network::LoadModule()
 			module->Init(this);
 		}
 	}
+}
+
+void
+Network::InitServer(){
+	ServerSocket svs(2222);//端口号
+	TCPServerParams* pParams = new TCPServerParams;
+	pParams->setMaxThreads(2);
+	pParams->setMaxQueued(2);
+	pParams->setThreadIdleTime(64);
+	tcpsrv = new TCPServer(new TCPServerConnectionFactoryImpl<ServerConnection>(), svs, pParams);
+	tcpsrv->setConnectionFilter(new ServerRejectFilter);
+}
+
+/* 启动服务器
+ * */
+void
+Network::StartServer(){
+	tcpsrv->start();
+}
+
+/* 停止服务器
+ * */
+void
+Network::StopServer(){
+	tcpsrv->stop();
 }
