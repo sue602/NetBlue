@@ -28,7 +28,6 @@ void
 GateLogic::Init(IService * aService)
 {
 	this->iService = aService;
-	printf("gatelogic = %p \n",aService);
 }
 
 void

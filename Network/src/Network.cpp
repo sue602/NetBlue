@@ -100,7 +100,6 @@ Network::LoadModule()
 		module=func();
 		if(module)
 		{
-			printf("network init = %p\n",this);
 			module->Init(this);
 		}
 	}
