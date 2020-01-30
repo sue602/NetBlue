@@ -44,7 +44,7 @@ all: libNetwork.so
 libNetwork.so: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cross G++ Linker'
-	g++ -shared -o "libNetwork.so" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L"/home/ltzd/workspace/NetBlue/Common/Debug" -shared -o "libNetwork.so" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

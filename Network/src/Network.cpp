@@ -40,59 +40,50 @@ Network::~Network()
 	delete _tcpsrv;
 }
 
-void
-Network::Init()
+void Network::init()
 {
-	LoadModule();
-	InitServer();
-	StartServer();
+	loadModule();
+	initServer();
+	startServer();
 }
 
-void
-Network::Uninit()
+void Network::unInit()
 {
-	StopServer();
+	stopServer();
 }
 
-void
-Network::BroadcastRequestMessage(const char * msg, unsigned int sz)
+void Network::broadcastRequestMessage(const char * msg, unsigned int sz)
 {
 
 }
 
-void
-Network::BroadcastResponseMessage(const char * msg,unsigned int sz)
+void Network::broadcastResponseMessage(const char * msg,unsigned int sz)
 {
 
 }
 
-void
-Network::SendResponseMessage(const char * msg, unsigned int sz)
+void Network::sendResponseMessage(const char * msg, unsigned int sz)
 {
 
 }
 
-void
-Network::SendRequestMessage(const char * msg, unsigned int sz)
+void Network::sendRequestMessage(const char * msg, unsigned int sz)
 {
 
 }
 
-void
-Network::DisconnectClient(unsigned int aHandle)
+void Network::disconnectClient(unsigned int aHandle)
 {
 
 }
 
-long
-Network::ServerKey()
+long Network::serverKey()
 {
 	std::cout << "network server key\n" << std::endl;
 	return 1;
 }
 
-void
-Network::LoadModule()
+void Network::loadModule()
 {
 	//加载逻辑库
 	std::string path("libGateServer");
@@ -104,7 +95,7 @@ Network::LoadModule()
 		_module=func();
 		if(_module)
 		{
-			_module->Init(this);
+			_module->init(this);
 		}
 	}
 	//启动模块处理线程
@@ -112,8 +103,8 @@ Network::LoadModule()
 	_modThread.start(*_modHandler);//启动线程
 }
 
-void
-Network::InitServer(){
+void Network::initServer()
+{
 	ServerSocket svs(2222);//端口号
 	TCPServerParams* pParams = new TCPServerParams;
 	pParams->setMaxThreads(2);
@@ -125,15 +116,15 @@ Network::InitServer(){
 
 /* 启动服务器
  * */
-void
-Network::StartServer(){
+void Network::startServer()
+{
 	_tcpsrv->start();
 }
 
 /* 停止服务器
  * */
-void
-Network::StopServer(){
+void Network::stopServer()
+{
 	//等待网络线程结束
 	_tcpsrv->stop();
 	//停止模块处理线程

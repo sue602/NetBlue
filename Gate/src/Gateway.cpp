@@ -79,7 +79,7 @@ Gateway::main(const std::vector<std::string>& args)
 	loader.classFor("Network").autoDelete(network);
 	poco_information(logger,"Server is init ...");
 	//初始化
-	network->Init();
+	network->init();
 	poco_information(logger,"Server start success !");
 	//接收命令线程
 	CmdHandler cmdRunnable(network);
@@ -88,7 +88,7 @@ Gateway::main(const std::vector<std::string>& args)
 	thread.join();//等待线程结束
 	poco_information(logger,"Server is uninit ...");
 	//释放资源
-	network->Uninit();
+	network->unInit();
 	poco_information(logger,"Server uninit success");
 	loader.unloadLibrary(libName);
 	poco_information(logger,"Server done");

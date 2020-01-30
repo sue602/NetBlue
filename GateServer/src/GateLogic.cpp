@@ -24,32 +24,27 @@ GateLogic::~GateLogic()
 
 }
 
-void
-GateLogic::Init(IService * aService)
+void GateLogic::init(IService * aService)
 {
 	this->iService = aService;
 }
 
-void
-GateLogic::Uninit()
+void GateLogic::unInit()
 {
 
 }
 
-int
-GateLogic::ProcessRequestMessage(const char * aMsg, unsigned int size)
+int GateLogic::handleRequestMessage(const char * aMsg, unsigned int size)
 {
 	return -1;
 }
 
-int
-GateLogic::ProcessResponseMessage(const char * aMsg, unsigned int size)
+int GateLogic::handleResponseMessage(const char * aMsg, unsigned int size)
 {
 	return -1;
 }
 
-int
-GateLogic::Run()
+int GateLogic::handle()
 {
 	return 0;
 }

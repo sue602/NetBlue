@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lPocoFoundation -lPocoNet
+LIBS := -lPocoFoundation -lCommon -lPocoNet
 

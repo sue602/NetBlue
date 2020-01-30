@@ -9,7 +9,7 @@
 #define GATELOGIC_H_
 
 #include "ServiceInterface.h"
-#include "Poco/Foundation.h"
+#include "Poco/ClassLibrary.h"
 
 class GateLogic : public IServiceModule
 {
@@ -17,14 +17,14 @@ public:
 	GateLogic();
 	~GateLogic();
 
-	void Init(IService * aService);
+	void init(IService * aService);
 	//处理message,返回0=消息已处理，//返回-1，消息未处理
-	int ProcessRequestMessage(const char * aMsg, unsigned int size);
-	int ProcessResponseMessage(const char * aMsg, unsigned int size);
+	int handleRequestMessage(const char * aMsg, unsigned int size);
+	int handleResponseMessage(const char * aMsg, unsigned int size);
 	//处理逻辑
-	int Run();
+	int handle();
 	//模块被销毁
-	void Uninit();
+	void unInit();
 
 private:
 	IService * iService;
