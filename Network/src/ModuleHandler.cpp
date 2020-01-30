@@ -25,24 +25,14 @@ void ModuleHandler::run()
 {
 	Timestamp startTime;
 	Timestamp now;
-	Timespan interval(0,999);//设置毫秒时间
-	int time = 0;
+	double elapsed = 0;
 	while(!_stopped)
 	{
-		handler(time);
+		handler(elapsed);
 		now.update();
-		Timestamp::TimeDiff dt = now - startTime;
-		if(interval - dt > 0)
-		{
-			std::cout << "sleep =" << dt << std::endl;
-			time = interval.microseconds();//转化成毫秒
-			Thread::sleep( time - dt);
-		}else
-		{
-			std::cout << "yield =" << dt << std::endl;
-			Thread::yield();
-			time = interval.microseconds() + (dt%1000000)*1000;//转化成毫秒
-		}
+		Timestamp::TimeDiff dt = now - startTime;//100纳秒为1个单位
+		//转化为毫秒
+		elapsed = dt * 100 / 1000000.0;
 		//更新时间
 		startTime.update();
 	}
@@ -54,15 +44,8 @@ ModuleHandler::Stop()
 	_stopped = false;
 }
 
-static int xx= 0;
 void
-ModuleHandler::handler(int dt)
+ModuleHandler::handler(double dt)
 {
-	if( xx == 3)
-	{
-		Thread::sleep( 3000 );
-	}
-	xx++;
-	Timespan startTime;
-	std::cout << "handler =" << dt << " = " << startTime.totalSeconds() << " - " << startTime.totalMicroseconds() << std::endl;
+
 }

@@ -26,7 +26,7 @@ protected:
 	short _stopped;
 
 private:
-	void handler(int dt);
+	void handler(double dt);
 };
 
 #endif /* SRC_MODULEHANDLER_H_ */
