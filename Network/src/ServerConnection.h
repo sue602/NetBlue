@@ -15,10 +15,12 @@ using Poco::Net::TCPServerConnection;
 
 class ServerConnection : public TCPServerConnection {
 public:
-	ServerConnection(const StreamSocket& s);
+	ServerConnection(const StreamSocket& ss);
 	virtual ~ServerConnection();
 	//inherit from superclass
 	virtual void run();
+protected:
+	std::string _peer;
 };
 
 #endif /* SRC_SERVERCONNECTION_H_ */

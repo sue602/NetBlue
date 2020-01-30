@@ -5,14 +5,17 @@
  *      Author: ltzd
  */
 
+#include "Poco/Logger.h"
+using Poco::Logger;
 #include <iostream>
 #include "ServerConnection.h"
 
-ServerConnection::ServerConnection(const StreamSocket& s): TCPServerConnection(s) {
-
+ServerConnection::ServerConnection(const StreamSocket& ss): TCPServerConnection(ss) {
+	_peer = ss.peerAddress().toString();
 }
 
 ServerConnection::~ServerConnection() {
+	std::cout << "connection disconnected " << std::endl;
 }
 
 void ServerConnection::run(){

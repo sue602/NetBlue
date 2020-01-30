@@ -23,6 +23,7 @@ using Poco::Message;
 
 #include <iostream>
 #include "Gateway.h"
+#include "CommonDef.h"
 #include "CmdHandler.h"
 
 typedef Poco::ClassLoader<IService> PluginLoader;
@@ -69,7 +70,7 @@ int
 Gateway::main(const std::vector<std::string>& args)
 {
 	//server start step 3;
-	Logger& logger = Logger::get("GateServer");
+	Logger& logger = Logger::get(LOGGER_NAME);
 	logger.setLevel(Message::PRIO_INFORMATION);
 	PluginLoader loader;std::string libName("libNetwork");
 	libName += Poco::SharedLibrary::suffix(); // append .dll or .so

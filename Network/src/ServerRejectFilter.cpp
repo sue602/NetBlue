@@ -5,7 +5,11 @@
  *      Author: ltzd
  */
 
+#include "Poco/Logger.h"
+using Poco::Logger;
+
 #include <iostream>
+#include "CommonDef.h"
 #include "ServerRejectFilter.h"
 
 ServerRejectFilter::ServerRejectFilter() {
@@ -20,6 +24,9 @@ ServerRejectFilter::~ServerRejectFilter() {
 //默认可以连接到服务器
 bool ServerRejectFilter::accept(const StreamSocket& socket)
 {
-	std::cout << "new connection = " << socket.address().toString() << std::endl;
+	Logger& logger = Logger::get(LOGGER_NAME);
+	std::string client("new connection = ");
+	client.append(socket.peerAddress().toString());
+	poco_information(logger,client);
 	return true;
 }

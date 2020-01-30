@@ -41,7 +41,7 @@ void ModuleHandler::run()
 void
 ModuleHandler::Stop()
 {
-	_stopped = false;
+	_stopped = true;
 }
 
 void
