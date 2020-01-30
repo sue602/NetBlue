@@ -7,14 +7,16 @@
 //============================================================================
 
 #include <iostream>
+#include <memory.h>
 #include <stdio.h>
 using namespace std;
-
+#include "ByteArray.h"
 
 
 #include "GateLogic.h"
 
-GateLogic::GateLogic()
+GateLogic::GateLogic():
+		iService(0)
 {
 
 }
@@ -34,13 +36,17 @@ void GateLogic::unInit()
 
 }
 
-int GateLogic::handleRequestMessage(const char * aMsg, unsigned int size)
+int GateLogic::handleRequestMessage(ByteArray * msg)
 {
-	return -1;
+	std::string result = msg->readString();
+	std::cout << "gate logic recv = " << result << "\n" << std::endl;
+	this->iService->sendResponseMessage(msg);
+	return 1;
 }
 
-int GateLogic::handleResponseMessage(const char * aMsg, unsigned int size)
+int GateLogic::handleResponseMessage(ByteArray * msg)
 {
+
 	return -1;
 }
 

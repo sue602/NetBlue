@@ -13,7 +13,8 @@ char writer[MAXMSGSIZE] = "\0";
 ByteArray::ByteArray(unsigned int mBufferSize):
 		mCmdType(0),
 		mStatus(0),
-		mAction(0)
+		mAction(0),
+		mReleaseSelf(true)
 {
 	m_pContent = new char[mBufferSize];
 	memset(m_pContent, 0, mBufferSize);
@@ -23,15 +24,42 @@ ByteArray::ByteArray(unsigned int mBufferSize):
 	mTag = -1;
 }
 
+ByteArray::ByteArray(void * buff, int size):
+		mCmdType(0),
+		mStatus(0),
+		mAction(0),
+		mReleaseSelf(false)
+{
+	m_pContent = reinterpret_cast<char*>(buff);
+	memset(m_pContent, 0, size);
+	m_nTotalSize = size;
+	m_nRdptr = 0;
+	m_nWrPtr = 0;
+	mTag = -1;
+}
+
+void ByteArray::reset()
+{
+	mCmdType = 0;
+	mStatus = 0;
+	mAction = 0;
+	m_nTotalSize = 0;
+	m_nRdptr = 0;
+	m_nWrPtr = 0;
+	mTag = -1;
+	mReleaseSelf = false;
+}
+
 ByteArray::~ByteArray()
 {
-    delete[] m_pContent;
+	if(mReleaseSelf)
+		delete[] m_pContent;
 }
 
 void ByteArray::print()
 {
 	unsigned short *p = (unsigned short*)(rdPtr() + 2);
-	printf("ByteArray:%d\n", p[0]);
+	printf("ByteArray =:%d\n", p[0]);
 }
 
 void ByteArray::resize(unsigned int mLength)
@@ -50,6 +78,13 @@ void ByteArray::resize(unsigned int mLength)
 
 	delete[] tmpContent;
 	tmpContent = NULL;
+}
+
+void ByteArray::reuse()
+{
+	 m_nRdptr = 0;
+	 m_nWrPtr = 0;
+	 memset(m_pContent,0,m_nTotalSize);
 }
 
 char* ByteArray::base() const

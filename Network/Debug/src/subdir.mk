@@ -4,25 +4,31 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/ClientConnection.cpp \
+../src/ClientRejectFilter.cpp \
+../src/ClientsMgr.cpp \
 ../src/MessageQueue.cpp \
 ../src/ModuleHandler.cpp \
 ../src/Network.cpp \
-../src/ServerConnection.cpp \
-../src/ServerRejectFilter.cpp 
+../src/NetworkMgr.cpp 
 
 OBJS += \
+./src/ClientConnection.o \
+./src/ClientRejectFilter.o \
+./src/ClientsMgr.o \
 ./src/MessageQueue.o \
 ./src/ModuleHandler.o \
 ./src/Network.o \
-./src/ServerConnection.o \
-./src/ServerRejectFilter.o 
+./src/NetworkMgr.o 
 
 CPP_DEPS += \
+./src/ClientConnection.d \
+./src/ClientRejectFilter.d \
+./src/ClientsMgr.d \
 ./src/MessageQueue.d \
 ./src/ModuleHandler.d \
 ./src/Network.d \
-./src/ServerConnection.d \
-./src/ServerRejectFilter.d 
+./src/NetworkMgr.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

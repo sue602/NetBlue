@@ -23,11 +23,12 @@ class ByteArray
 {
 public:
 	ByteArray(unsigned int mBufferSize = MAXMSGSIZE);
+	ByteArray(void * buff, int size);
 	virtual ~ByteArray();
 
 	void print();
 	void resize(unsigned int mLength);
-	void reuse(){ m_nRdptr = 0; m_nWrPtr = 0;}
+	void reuse();
 public:
 	short readInt16();								// 从字节流读取16位整形
 	unsigned short readUint16();      // 从字节流读取16位无符号整形
@@ -104,12 +105,13 @@ public:
 	unsigned int space();
 	int copy(const char *buf, int n);
 	void rdSkip(int mBytes); //skip read bytes
-
+	void reset();
 private:
 	int mTag;
 	int mCmdType;
     char mStatus;
 	int mAction;
+	bool mReleaseSelf;//是否自己释放
 
 private:
 

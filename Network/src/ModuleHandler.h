@@ -8,6 +8,7 @@
 #ifndef SRC_MODULEHANDLER_H_
 #define SRC_MODULEHANDLER_H_
 
+#include "ServiceInterface.h"
 #include "Poco/Runnable.h"
 #include "Poco/DateTime.h"
 #include "Poco/Timestamp.h"
@@ -18,12 +19,13 @@ using Poco::Timestamp;
 
 class ModuleHandler : public Runnable {
 public:
-	ModuleHandler();
+	ModuleHandler(IServiceModule * module);
 	virtual ~ModuleHandler();
 	virtual void run();
 	void Stop();
 protected:
 	short _stopped;
+	IServiceModule * _module;
 
 private:
 	void handler(double dt);

@@ -10,19 +10,19 @@ using Poco::Logger;
 
 #include <iostream>
 #include "CommonDef.h"
-#include "ServerRejectFilter.h"
+#include "ClientRejectFilter.h"
 
-ServerRejectFilter::ServerRejectFilter() {
+ClientRejectFilter::ClientRejectFilter() {
 	// TODO Auto-generated constructor stub
 
 }
 
-ServerRejectFilter::~ServerRejectFilter() {
+ClientRejectFilter::~ClientRejectFilter() {
 	// TODO Auto-generated destructor stub
 }
 
 //默认可以连接到服务器
-bool ServerRejectFilter::accept(const StreamSocket& socket)
+bool ClientRejectFilter::accept(const StreamSocket& socket)
 {
 	Logger& logger = Logger::get(LOGGER_NAME);
 	std::string client("new connection = ");

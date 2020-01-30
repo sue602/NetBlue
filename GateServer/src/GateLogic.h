@@ -11,6 +11,8 @@
 #include "ServiceInterface.h"
 #include "Poco/ClassLibrary.h"
 
+class ByteArray;
+
 class GateLogic : public IServiceModule
 {
 public:
@@ -19,8 +21,8 @@ public:
 
 	void init(IService * aService);
 	//处理message,返回0=消息已处理，//返回-1，消息未处理
-	int handleRequestMessage(const char * aMsg, unsigned int size);
-	int handleResponseMessage(const char * aMsg, unsigned int size);
+	int handleRequestMessage(ByteArray * msg);
+	int handleResponseMessage(ByteArray * msg);
 	//处理逻辑
 	int handle();
 	//模块被销毁

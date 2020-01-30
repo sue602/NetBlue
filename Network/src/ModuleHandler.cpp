@@ -9,9 +9,12 @@
 #include "ModuleHandler.h"
 #include "Poco/Thread.h"
 using Poco::Thread;
+#include "NetworkMgr.h"
+#include "ByteArray.h"
 
-ModuleHandler::ModuleHandler():
-_stopped(0)
+ModuleHandler::ModuleHandler(IServiceModule * module):
+	_stopped(0),
+	_module(module)
 {
 
 }
@@ -47,5 +50,15 @@ ModuleHandler::Stop()
 void
 ModuleHandler::handler(double dt)
 {
+	ByteArray * data = NetworkMgr::Instance()->popClientMsg();
+	if(NULL != data)
+	{
+		int ret = _module->handleRequestMessage(data);
+		if(1 == ret) //已经消费
+		{
 
+		}
+		//回收池
+		NetworkMgr::Instance()->release(data);
+	}
 }

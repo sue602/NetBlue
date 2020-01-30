@@ -39,13 +39,13 @@ public:
 	//释放资源
 	virtual void unInit();
 	//向底层发送消息
-	virtual void sendResponseMessage(const char * msg, unsigned int sz);
+	virtual void sendResponseMessage(ByteArray * msg);
 	//向服务器发请求消息
-	virtual void sendRequestMessage(const char * msg, unsigned int sz);
+	virtual void sendRequestMessage(ByteArray * msg);
 	//向多个服务器发送消息
-	virtual void broadcastRequestMessage(const char * msg, unsigned int sz);
+	virtual void broadcastRequestMessage(ByteArray * msg);
 	//向多个服务器广播多个转发消息
-	virtual void broadcastResponseMessage(const char * msg, unsigned int sz);
+	virtual void broadcastResponseMessage(ByteArray * msg);
 	//关闭客户连接,参数为连接句柄，连接句柄一般存于命令的extension
 	virtual void disconnectClient(unsigned int aHandle);
 	//获取服务器KEY

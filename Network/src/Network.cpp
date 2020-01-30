@@ -22,9 +22,11 @@ using Poco::Net::TCPServerConnectionFactory;
 using Poco::Net::TCPServerConnectionFactoryImpl;
 
 #include "Network.h"
+#include "ClientsMgr.h"
+#include "NetworkMgr.h"
 #include "ModuleHandler.h"
-#include "ServerRejectFilter.h"
-#include "ServerConnection.h"
+#include "ClientRejectFilter.h"
+#include "ClientConnection.h"
 
 
 Network::Network():
@@ -32,6 +34,7 @@ Network::Network():
 		_modHandler(0),
 		_module(0)
 {
+	NetworkMgr::Instance();//初始化
 
 }
 
@@ -52,29 +55,29 @@ void Network::unInit()
 	stopServer();
 }
 
-void Network::broadcastRequestMessage(const char * msg, unsigned int sz)
+void Network::broadcastRequestMessage(ByteArray * msg)
 {
-
+	NetworkMgr::Instance()->broadcastRequestMessage(msg);
 }
 
-void Network::broadcastResponseMessage(const char * msg,unsigned int sz)
+void Network::broadcastResponseMessage(ByteArray * msg)
 {
-
+	NetworkMgr::Instance()->broadcastResponseMessage(msg);
 }
 
-void Network::sendResponseMessage(const char * msg, unsigned int sz)
+void Network::sendResponseMessage(ByteArray * msg)
 {
-
+	NetworkMgr::Instance()->sendResponseMessage(msg);
 }
 
-void Network::sendRequestMessage(const char * msg, unsigned int sz)
+void Network::sendRequestMessage(ByteArray * msg)
 {
-
+	NetworkMgr::Instance()->sendRequestMessage(msg);
 }
 
 void Network::disconnectClient(unsigned int aHandle)
 {
-
+	NetworkMgr::Instance()->disconnectClient(aHandle);
 }
 
 long Network::serverKey()
@@ -99,7 +102,7 @@ void Network::loadModule()
 		}
 	}
 	//启动模块处理线程
-	_modHandler = new ModuleHandler;
+	_modHandler = new ModuleHandler(_module);
 	_modThread.start(*_modHandler);//启动线程
 }
 
@@ -110,8 +113,8 @@ void Network::initServer()
 	pParams->setMaxThreads(2);
 	pParams->setMaxQueued(2);
 	pParams->setThreadIdleTime(64);
-	_tcpsrv = new TCPServer(new TCPServerConnectionFactoryImpl<ServerConnection>(), svs, pParams);
-	_tcpsrv->setConnectionFilter(new ServerRejectFilter);
+	_tcpsrv = new TCPServer(new TCPServerConnectionFactoryImpl<ClientConnection>(), svs, pParams);
+	_tcpsrv->setConnectionFilter(new ClientRejectFilter);
 }
 
 /* 启动服务器
