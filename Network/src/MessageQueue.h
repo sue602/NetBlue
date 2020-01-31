@@ -18,13 +18,13 @@ class MessageQueue {
 public:
 	MessageQueue(int preAlloc, int maxAlloc);
 	virtual ~MessageQueue();
-	bool writeSndMsg(ByteArray * msg);
-	bool writeRevMsg(ByteArray * msg);
+	bool pushSndMsg(ByteArray * msg);//待发送消息入队列
+	bool pushRevMsg(ByteArray * msg);//接收到客户端消息，并将其入队列
 	ByteArray * popBuffer();
-	ByteArray * popWriteMsg();
-	ByteArray * popReadMsg();
-	void clearReadList();
-	void clearWriteList();
+	ByteArray * popSndMsg();//待发送出队列
+	ByteArray * popRevMsg();//从队列中弹出已接收到消息
+	void clearRevList();
+	void clearSndList();
 	void release(ByteArray * ba);
 	void clearPool();
 protected:

@@ -30,12 +30,12 @@ int NetworkMgr::uniqueId()
 
 void NetworkMgr::addClientMsg(ByteArray * ba)
 {
-	_mq->writeRevMsg(ba);
+	_mq->pushRevMsg(ba);
 }
 
 ByteArray * NetworkMgr::popClientMsg()
 {
-	return _mq->popReadMsg();
+	return _mq->popRevMsg();
 }
 
 void NetworkMgr::release(ByteArray * ba)
@@ -53,7 +53,6 @@ void NetworkMgr::sendResponseMessage(ByteArray * msg)
 		ByteArray * sndMsg = _mq->popBuffer();
 		sndMsg->setTag(ID);
 		unsigned short * len = (unsigned short *) msg->base();
-		int tmplen = * len;
 		sndMsg->copy(msg->base(),*len);
 		cc->sendMsg(sndMsg);
 	}
@@ -81,5 +80,9 @@ void NetworkMgr::broadcastResponseMessage(ByteArray * msg)
 //关闭客户连接,参数为连接句柄，连接句柄一般存于命令的extension
 void NetworkMgr::disconnectClient(unsigned int aHandle)
 {
-
+	ClientConnection * cc = ClientsMgr::Instance()->getClient(aHandle);
+	if(cc)
+	{
+		cc->disconnect();
+	}
 }

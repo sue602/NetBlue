@@ -34,49 +34,45 @@ MessageQueue::MessageQueue(int preAlloc, int maxAlloc)
 
 MessageQueue::~MessageQueue() {
 	clearPool();
-	clearReadList();
-	clearWriteList();
+	clearRevList();
+	clearSndList();
 }
 
-bool MessageQueue::writeSndMsg(ByteArray * msg)
+bool MessageQueue::pushSndMsg(ByteArray * msg)
 {
 	FastMutex::ScopedLock lock(_writeMutex);
 	_writeList.push_back(msg);
 	return true;
 }
 
-bool MessageQueue::writeRevMsg(ByteArray * msg)
+bool MessageQueue::pushRevMsg(ByteArray * msg)
 {
 	FastMutex::ScopedLock lock(_readMutex);
 	_readList.push_back(msg);
 	return true;
 }
 
-ByteArray * MessageQueue::popWriteMsg()
+ByteArray * MessageQueue::popSndMsg()
 {
-	FastMutex::ScopedLock lock(_writeMutex);
-
 	if (_writeList.empty())
 		return NULL;
-
+	FastMutex::ScopedLock lock(_writeMutex);
 	ByteArray * data = * _writeList.begin();
 	_writeList.erase(_writeList.begin());
 	return data;
 }
 
-ByteArray * MessageQueue::popReadMsg()
+ByteArray * MessageQueue::popRevMsg()
 {
-	FastMutex::ScopedLock lock(_readMutex);
-
 	if (_readList.empty())
 		return NULL;
-
+	FastMutex::ScopedLock lock(_readMutex);
 	ByteArray * data = * _readList.begin();
 	_readList.erase(_readList.begin());
 	return data;
 }
 
-void MessageQueue::clearReadList()
+void MessageQueue::clearRevList()
 {
 	FastMutex::ScopedLock lock(_readMutex);
 	BlockVec::iterator itr = _readList.begin();
@@ -86,7 +82,7 @@ void MessageQueue::clearReadList()
 	}
 }
 
-void MessageQueue::clearWriteList()
+void MessageQueue::clearSndList()
 {
 	FastMutex::ScopedLock lock(_writeMutex);
 	BlockVec::iterator itr = _writeList.begin();

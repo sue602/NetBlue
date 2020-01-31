@@ -15,7 +15,10 @@ using Poco::Logger;
 
 ClientConnection::ClientConnection(const StreamSocket& ss):
 		TCPServerConnection(ss),
-		ID(-1)
+		ID(-1),
+		_mq(0),
+		_socket(0),
+		_stopped(0)
 {
 	_peer = ss.peerAddress().toString();
 	_mq = new MessageQueue(64,128);
@@ -31,10 +34,11 @@ ClientConnection::~ClientConnection() {
 void ClientConnection::run(){
 	StreamSocket& ss = socket();
 	_socket = & ss;
+	_socket->setBlocking(false);//设置为非阻塞
 	try
 	{
 		char buffer[2];//头长度
-		for(;;)
+		while(!_stopped)
 		{
 			//接收数据
 			int n = ss.receiveBytes(buffer, sizeof(buffer));
@@ -55,14 +59,14 @@ void ClientConnection::run(){
 					NetworkMgr::Instance()->addClientMsg(dataRev);
 				}
 			}
-//			ByteArray * dataSnd = _mq->popWriteMsg();
-//			if( NULL != dataSnd)
-//			{
-//				int len = dataSnd->length();
-//				ss.sendBytes(dataSnd->base(), dataSnd->length());
-//				//回收
-//				_mq->release(dataSnd);
-//			}
+			//从待发送队列弹出一条消息
+			ByteArray * dataSnd = _mq->popSndMsg();
+			if( NULL != dataSnd)
+			{
+				ss.sendBytes(dataSnd->base(), dataSnd->length());
+				//回收
+				_mq->release(dataSnd);
+			}
 		}
 	}
 	catch (Poco::Exception& exc)
@@ -83,7 +87,11 @@ int ClientConnection::getID()
 
 void ClientConnection::sendMsg(ByteArray * msg)
 {
-	int len = msg->length();
-	_socket->sendBytes(msg->base(), msg->length());
-	_mq->release(msg);
+	_mq->pushSndMsg(msg);
+}
+
+void ClientConnection::disconnect()
+{
+	_stopped = true;
+	_socket->shutdown();
 }
