@@ -10,12 +10,10 @@
 #include "ClientsMgr.h"
 
 ClientsMgr::ClientsMgr() {
-	// TODO Auto-generated constructor stub
 
 }
 
 ClientsMgr::~ClientsMgr() {
-	// TODO Auto-generated destructor stub
 }
 
 bool ClientsMgr::addClient(ClientConnection * cc)

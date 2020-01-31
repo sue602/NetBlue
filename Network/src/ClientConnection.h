@@ -19,11 +19,10 @@ class ClientConnection : public TCPServerConnection {
 public:
 	ClientConnection(const StreamSocket& ss);
 	virtual ~ClientConnection();
-	//inherit from superclass
-	virtual void run();
+	virtual void run();//inherit from superclass
 	void setID(int id);
 	int getID();
-	void sendMsg(ByteArray * msg);
+	void sendMsg(ByteArray * msg);//发送消息,进队列
 	void disconnect();//主动断开连接
 protected:
 	std::string _peer;

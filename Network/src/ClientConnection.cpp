@@ -26,14 +26,17 @@ ClientConnection::ClientConnection(const StreamSocket& ss):
 }
 
 ClientConnection::~ClientConnection() {
-	std::cout << "connection disconnected " << std::endl;
+	std::cout << "~ClientConnection " << std::endl;
 	delete _mq;
+	_mq = NULL;
 	ClientsMgr::Instance()->delClient(ID);
 }
 
 void ClientConnection::run(){
 	StreamSocket& ss = socket();
 	_socket = & ss;
+	Poco::Timespan timeout(2,0);
+	_socket->setReceiveTimeout(timeout);
 	_socket->setBlocking(false);//设置为非阻塞
 	try
 	{
@@ -42,7 +45,12 @@ void ClientConnection::run(){
 		{
 			//接收数据
 			int n = ss.receiveBytes(buffer, sizeof(buffer));
-			if(2 == n)
+			if(0 == n) //这里表示对端的socket已正常关闭
+			{
+				_stopped = 1;
+				break;
+			}
+			else if(2 == n)
 			{
 				int len  = buffer[0] * 256 + buffer[1];
 				ByteArray * dataRev = _mq->popBuffer();
@@ -68,10 +76,11 @@ void ClientConnection::run(){
 				_mq->release(dataSnd);
 			}
 		}
+		std::cerr << "Client : disconnected from " << _peer << std::endl;
 	}
 	catch (Poco::Exception& exc)
 	{
-		std::cerr << "EchoConnection: " << exc.displayText() << std::endl;
+		std::cerr << "Client Connection: " << exc.displayText() << std::endl;
 	}
 }
 
@@ -88,6 +97,8 @@ int ClientConnection::getID()
 void ClientConnection::sendMsg(ByteArray * msg)
 {
 	_mq->pushSndMsg(msg);
+//	_socket->sendBytes(msg->base(), msg->length());
+//	_mq->release(msg);
 }
 
 void ClientConnection::disconnect()
