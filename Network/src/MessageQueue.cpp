@@ -128,7 +128,7 @@ ByteArray * MessageQueue::popBuffer()
 	else
 	{
 		ByteArray* ptr = _pMemoryPool.back();
-		ptr->reuse();
+		ptr->reuse();//重置
 		_pMemoryPool.pop_back();
 		return ptr;
 	}
