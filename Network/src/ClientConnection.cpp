@@ -48,6 +48,7 @@ void ClientConnection::run(){
 			if(0 == n) //这里表示对端的socket已正常关闭
 			{
 				_stopped = 1;
+				std::cout << "client disconnect id = " << ID << std::endl;
 				break;
 			}
 			else if(2 == n)
@@ -64,7 +65,6 @@ void ClientConnection::run(){
 						recv += count;
 					}
 					dataRev->setTag(ID);
-					unsigned short * len = (unsigned short *) dataRev->base();
 					NetworkMgr::Instance()->addClientMsg(dataRev);
 				}
 			}
@@ -81,7 +81,7 @@ void ClientConnection::run(){
 	}
 	catch (Poco::Exception& exc)
 	{
-		std::cerr << "Client Connection: " << exc.displayText() << std::endl;
+		std::cerr << "Client Connection= " << ID << ":" << exc.displayText() << std::endl;
 	}
 }
 

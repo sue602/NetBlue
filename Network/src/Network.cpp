@@ -110,8 +110,8 @@ void Network::initServer()
 {
 	ServerSocket svs(2222);//端口号
 	TCPServerParams* pParams = new TCPServerParams;
-	pParams->setMaxThreads(2);
-	pParams->setMaxQueued(2);
+	pParams->setMaxThreads(8);
+	pParams->setMaxQueued(1024*10);
 	pParams->setThreadIdleTime(64);
 	_tcpsrv = new TCPServer(new TCPServerConnectionFactoryImpl<ClientConnection>(), svs, pParams);
 	_tcpsrv->setConnectionFilter(new ClientRejectFilter);
