@@ -64,6 +64,7 @@ void ClientConnection::run(){
 						recv += count;
 					}
 					dataRev->setTag(ID);
+					unsigned short * len = (unsigned short *) dataRev->base();
 					NetworkMgr::Instance()->addClientMsg(dataRev);
 				}
 			}

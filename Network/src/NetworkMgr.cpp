@@ -53,7 +53,8 @@ void NetworkMgr::sendResponseMessage(ByteArray * msg)
 		ByteArray * sndMsg = _mq->popBuffer();
 		sndMsg->setTag(ID);
 		unsigned short * len = (unsigned short *) msg->base();
-		sndMsg->copy(msg->base(),*len);
+		sndMsg->writeUshort(htons(*len));
+		sndMsg->copy(msg->base()+2,*len);
 		cc->sendMsg(sndMsg);
 	}
 }
