@@ -40,20 +40,28 @@ void ClientConnection::run(){
 	_socket->setBlocking(false);//设置为非阻塞
 	try
 	{
-		char buffer[2];//头长度
+		unsigned short headRead = 0;
+		const unsigned short headSize = 2;
+		char buffer[headSize] = {0};//头长度
 		while(!_stopped)
 		{
 			//接收数据
-			int n = ss.receiveBytes(buffer, sizeof(buffer));
+			int n = ss.receiveBytes(buffer+headRead, headSize-headRead);
+			if( n > 0)
+			{
+				headRead = headRead + n;
+			}
 			if(0 == n) //这里表示对端的socket已正常关闭
 			{
 				_stopped = 1;
 				std::cout << "client disconnect id = " << ID << std::endl;
 				break;
 			}
-			else if(2 == n)
+			else if(headSize == headRead)
 			{
+				headRead = 0;
 				int len  = buffer[0] * 256 + buffer[1];
+				memset(buffer,0,headSize);//清零
 				ByteArray * dataRev = _mq->popBuffer();
 				if(NULL != dataRev)
 				{
