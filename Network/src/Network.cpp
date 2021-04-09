@@ -13,6 +13,7 @@ using namespace std;
 #include "Poco/Net/TCPServer.h"
 #include "Poco/Net/ServerSocket.h"
 #include "Poco/Net/TCPServerParams.h"
+
 using Poco::Thread;
 using Poco::SharedLibrary;
 using Poco::Net::TCPServer;
@@ -90,7 +91,8 @@ void Network::loadModule()
 {
 	//加载逻辑库
 	std::string path("libGateServer");
-	path.append(SharedLibrary::suffix()); // adds ".dll" or ".so"
+//	path.append(SharedLibrary::suffix()); // adds ".dll" or ".so"
+	path.append(".so");
 	SharedLibrary library(path); // will also load the library
 	MODULE_ENTRY_FUNC func = (MODULE_ENTRY_FUNC)(library.getSymbol(MODULE_ENTRY_FUNC_NAME));
 	if(func)
@@ -108,13 +110,14 @@ void Network::loadModule()
 
 void Network::initServer()
 {
-	ServerSocket svs(2222);//端口号
+	short port = 2222;
+	ServerSocket svs(port);//端口号
 	TCPServerParams* pParams = new TCPServerParams;
-	pParams->setMaxThreads(8192);
 	pParams->setMaxQueued(8192);
 	pParams->setThreadIdleTime(64);
 	_tcpsrv = new TCPServer(new TCPServerConnectionFactoryImpl<ClientConnection>(), svs, pParams);
 	_tcpsrv->setConnectionFilter(new ClientRejectFilter);
+	printf("Server is listen on %d...\n",port);
 }
 
 /* 启动服务器
